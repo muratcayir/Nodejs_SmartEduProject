@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt= require('bcrypt')
+
 exports.createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
@@ -25,7 +26,8 @@ exports.loginUser = async (req, res) => {
         bcrypt.compare(password, user.password, (err, same) => {
           if (same) {
             // USER SESSION
-            res.status(200).send('YOU ARE LOGGED IN');
+            req.session.userID=user._id;
+            res.status(200).redirect('/users/dashboard');
           }
         });
       }
@@ -36,4 +38,21 @@ exports.loginUser = async (req, res) => {
       error,
     });
   }
+};
+
+
+exports.logoutUser= (req,res)=>
+{
+  req.session.destroy(()=>
+  {
+    res.redirect('/')
+  })
+}
+
+exports.getDashboardPage = async (req, res) => {
+  const user = await User.findOne({_id:req.session.userID})
+  res.status(200).render('dashboard', {
+    page_name: 'dashboard',
+    user
+  });
 };
