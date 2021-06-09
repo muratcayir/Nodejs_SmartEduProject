@@ -28,6 +28,11 @@ const UserSchema = new Schema({
     default: Date.now,
   },
 
+  role:{
+    type:String,
+    enum:["student","teacher","admin"],
+    defaut:"student"
+  }
 
 });
 
