@@ -1,9 +1,12 @@
+
+
 <%- include('partials/_header.ejs')%>
 	<!-- END LOADER -->
 	
 	<!-- Start header -->
 	<%- include('partials/_navigation.ejs')%>
 	<!-- End header -->
+	<% if(user){%>
 	
 	<div class="all-title-box">
 		<div class="container text-center">
@@ -102,3 +105,5 @@
 	<%- include('partials/_footer.ejs')%>
 
 	<!-- end footer -->
+
+	<%}%>
