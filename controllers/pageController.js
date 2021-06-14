@@ -1,11 +1,21 @@
-
 const nodemailer = require("nodemailer");
+const Course = require('../models/Course');
+const User = require('../models/User');
 
 
-exports.getIndexPage = (req, res) => {
-  console.log(req.session.userID);
+exports.getIndexPage = async (req, res) => {
+  
+  const courses = await Course.find().sort('-createdAt').limit(2);
+  const totalCourses = await Course.find().countDocuments();
+  const totalStudents = await User.countDocuments({role: 'student'});
+  const totalTeachers = await User.countDocuments({role: 'teacher'});
+
   res.status(200).render('index', {
     page_name: 'index',
+    courses,
+    totalCourses,
+    totalStudents,
+    totalTeachers
   });
 };
 
@@ -36,6 +46,7 @@ exports.getContactPage = (req, res) => {
 exports.sendEmail = async (req, res) => {
 
   try{
+
   const outputMessage = `
   
   <h1>Mail Details </h1>
@@ -52,15 +63,15 @@ exports.sendEmail = async (req, res) => {
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: "mrtelz2@gmail.com", // gmail account
-      pass: "rivqajrpeurytlis23", // gmail password
+      user: "arinyazilim@gmail.com", // gmail account
+      pass: "bpwrtssmqdsdjdjw", // gmail password
     },
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Smart EDU Contact Form" <mrtelz2@gmail.com>', // sender address
-    to: "mrtelz123@gmail.com", // list of receivers
+    from: '"Smart EDU Contact Form" <arinyazilim@gmail.com>', // sender address
+    to: "gcekic@gmail.com", // list of receivers
     subject: "Smart EDU Contact Form New Message ✔", // Subject line
     html: outputMessage, // html body
   });
@@ -72,13 +83,12 @@ exports.sendEmail = async (req, res) => {
   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
   // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 
-
   req.flash("success", "We Received your message succesfully");
 
   res.status(200).redirect('contact');
-}
-catch(err)
-{
+
+} catch (err) {
+  //req.flash("error", `Something happened! ${err}`);
   req.flash("error", `Something happened!`);
   res.status(200).redirect('contact');
 }

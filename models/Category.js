@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const slugify = require("slugify")
+const slugify = require('slugify');
 const Schema = mongoose.Schema;
-
 
 const CategorySchema = new Schema({
   name: {
@@ -9,22 +8,19 @@ const CategorySchema = new Schema({
     unique: true,
     required: true,
   },
-  
-
-  slug:{
-    type: String,
-    unique: true,
+  slug: {
+    type:String,
+    unique: true
   }
-
 });
 
-CategorySchema.pre('validate',function(next){
-  this.slug = slugify(this.name,{
+CategorySchema.pre('validate', function(next){
+  this.slug = slugify(this.name, {
     lower:true,
     strict:true
   })
-  next()
+  next();
 })
-const Category = mongoose.model('Category', CategorySchema);
 
+const Category = mongoose.model('Category', CategorySchema);
 module.exports = Category;
